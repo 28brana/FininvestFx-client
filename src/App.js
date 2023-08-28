@@ -33,6 +33,9 @@ function App() {
         <Typography variant="h3" textAlign={"center"}>
           Fininvest Assignment 🧑‍💻
         </Typography>
+        <Typography variant="subtitle2" textAlign={"center"}>
+          To Edit Price double click on price cell of table
+        </Typography>
         <Stack
           direction={"row"}
           alignItems={"center"}
