@@ -1,23 +1,68 @@
-import logo from './logo.svg';
-import './App.css';
-
+import { Button, Container, MenuItem, Select, Stack, Typography } from "@mui/material";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import "./App.css";
+import Table from "./Table";
+import CategoryList from "./component/CategoryList";
+import { getFoodList } from "./service/api";
 function App() {
+  const [category, setCategory] = useState("");
+  const [sort, setSort] = useState("");
+  const handleChangeCategory = (event) => {
+    setCategory(event.target.value);
+  };
+  const handleChangeSort = (event) => {
+    setSort(event.target.value);
+  };
+
+  const {
+    data: foodList,
+    isLoading,
+    isError,
+  } = useQuery(["food",sort,category], ()=>{
+    return getFoodList(sort,category);
+  });
+
+  const handleResetFilter=()=>{
+    setCategory('');
+    setSort('');
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <Container sx={{ pt: 5, pb: 10 }}>
+        <Typography variant="h3" textAlign={"center"}>
+          Fininvest Assignment 🧑‍💻
+        </Typography>
+        <Stack
+          direction={"row"}
+          alignItems={"center"}
+         gap={2}
+          my={4}
         >
-          Learn React
-        </a>
-      </header>
+          <CategoryList
+            category={category}
+            handleChangeCategory={handleChangeCategory}
+          />
+          <Select
+            variant="outlined"
+            displayEmpty
+            onChange={handleChangeSort}
+            value={sort}
+          >
+            <MenuItem disabled value="">
+              Select Sort{" "}
+            </MenuItem>
+            <MenuItem value="ASC">Ascending </MenuItem>
+            <MenuItem value="DESC">Descending</MenuItem>
+          </Select>
+          <Button onClick={handleResetFilter}>Reset Filter</Button>
+        </Stack>
+        <Table
+          row={foodList?.data?.data || []}
+          isLoading={isLoading}
+          isError={isError}
+        />
+      </Container>
     </div>
   );
 }
